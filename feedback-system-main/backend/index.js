@@ -158,6 +158,9 @@ app.post('/api/auth/admin/setup', async (req, res) => {
     res.status(500).json({ message: "Failed to create admin (it might already exist)", error: error.message });
   }
 });
+app.get('/', (req, res) => {
+  res.json({ message: "Welcome to Feedback System Backend API is running successfully!" });
+});
 
 
 app.listen(process.env.PORT || 5000, () => {
