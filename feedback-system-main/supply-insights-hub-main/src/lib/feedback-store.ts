@@ -66,7 +66,7 @@ export type FeedbackEntry = {
   recommend: "Yes" | "No" | "";
 };
 
-const API_URL = "http://localhost:5000/api/feedback";
+const API_URL = import.meta.env.VITE_API_URL || "https://feedback-system-of-modern-company.vercel.app/api/feedback";
 
 export async function loadEntries(): Promise<FeedbackEntry[]> {
   try {
