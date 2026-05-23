@@ -25,8 +25,7 @@ import {
 } from "@/lib/feedback-store";
 import { toast } from "sonner";
 
-import { adminLogin } from "@/lib/auth";
-
+const ADMIN_PASSWORD = "Modern@2026$";
 const SESSION_KEY = "modern_admin_session_v1";
 
 export const Route = createFileRoute("/admin")({
@@ -38,10 +37,8 @@ export const Route = createFileRoute("/admin")({
 
 function AdminPage() {
   const [authed, setAuthed] = useState(false);
-  const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
   const [showPwd, setShowPwd] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [entries, setEntries] = useState<FeedbackEntry[]>([]);
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<FeedbackEntry | null>(null);
@@ -94,34 +91,17 @@ function AdminPage() {
           </p>
           <form
             className="mt-8 w-full space-y-4"
-            onSubmit={async (e) => {
+            onSubmit={(e) => {
               e.preventDefault();
-              setIsLoading(true);
-              try {
-                await adminLogin(email, pwd);
+              if (pwd === ADMIN_PASSWORD) {
                 sessionStorage.setItem(SESSION_KEY, "1");
                 setAuthed(true);
-                toast.success("Welcome back, Admin!");
-              } catch (err: any) {
-                toast.error(err.message || "Invalid credentials");
-              } finally {
-                setIsLoading(false);
+                toast.success("Welcome back");
+              } else {
+                toast.error("Incorrect password");
               }
             }}
           >
-            <div>
-              <Label htmlFor="email">Admin Email</Label>
-              <div className="relative mt-1.5">
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  autoFocus
-                  required
-                />
-              </div>
-            </div>
             <div>
               <Label htmlFor="pwd">Password</Label>
               <div className="relative mt-1.5">
@@ -130,8 +110,8 @@ function AdminPage() {
                   type={showPwd ? "text" : "password"}
                   value={pwd}
                   onChange={(e) => setPwd(e.target.value)}
+                  autoFocus
                   className="pr-11"
-                  required
                 />
                 <button
                   type="button"
@@ -143,8 +123,8 @@ function AdminPage() {
                 </button>
               </div>
             </div>
-            <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+            <Button type="submit" className="w-full" size="lg">
+              Sign in
             </Button>
             <Button
               type="button"

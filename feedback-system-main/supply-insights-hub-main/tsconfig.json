@@ -24,9 +24,8 @@
     "verbatimModuleSyntax": false,
     "noEmit": true,
     /* Linting */
-   "skipLibCheck": true,
-    "strict": false,
-    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "strict": true,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,

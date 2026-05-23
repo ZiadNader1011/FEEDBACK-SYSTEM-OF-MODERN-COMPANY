@@ -15,7 +15,6 @@ import {
   saveEntry,
   type FeedbackEntry,
 } from "@/lib/feedback-store";
-import { getStoredUser, logout } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -67,37 +66,6 @@ function ClientForm() {
   const [workAgain, setWorkAgain] = useState<FeedbackEntry["workAgain"]>("");
   const [recommend, setRecommend] = useState<FeedbackEntry["recommend"]>("");
   const [submitted, setSubmitted] = useState(false);
-  const userAuth = getStoredUser();
-
-  if (!userAuth) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <BrandHeader subtitle="Client Feedback" variant="white" />
-        <main className="flex-1 flex flex-col items-center justify-center p-4">
-          <Card className="max-w-md w-full p-6 text-center space-y-6">
-            <h2 className="text-2xl font-semibold">Authentication Required</h2>
-            <p className="text-muted-foreground">
-              Please log in to submit your feedback.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:justify-center mt-4">
-              <Link
-                to="/login"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-2.5 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-              >
-                Register
-              </Link>
-            </div>
-          </Card>
-        </main>
-      </div>
-    );
-  }
 
   const totalRatings = useMemo(() => {
     let total = 0;
@@ -128,13 +96,9 @@ function ClientForm() {
       workAgain,
       recommend,
     };
-    if (userAuth && userAuth.user && userAuth.user.id) {
-      saveEntry(entry, userAuth.user.id);
-      setSubmitted(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else {
-      toast.error("User session invalid. Please log in again.");
-    }
+    saveEntry(entry);
+    setSubmitted(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   if (submitted) {
@@ -414,18 +378,6 @@ function ClientForm() {
       <footer className="border-t border-border py-6 text-center text-xs text-muted-foreground">
         <p>Modern Enterprise — 8 Ibn El Garah St, Cleopatra, Alexandria, Egypt</p>
         <p className="mt-1">info@modernsupplyeg.com · www.modernsupplyeg.com</p>
-        {userAuth && (
-          <div className="mt-4">
-            <p>Logged in as {userAuth.user.email}</p>
-            <button 
-              onClick={logout} 
-              className="mt-2 text-primary hover:underline underline-offset-4"
-              type="button"
-            >
-              Log out
-            </button>
-          </div>
-        )}
       </footer>
     </div>
   );

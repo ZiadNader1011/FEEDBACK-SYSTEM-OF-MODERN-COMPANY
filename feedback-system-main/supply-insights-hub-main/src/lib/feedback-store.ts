@@ -66,14 +66,13 @@ export type FeedbackEntry = {
   recommend: "Yes" | "No" | "";
 };
 
-const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:5001/api").trim();
-const API_URL = `${baseUrl}/feedback`;
+const API_URL = "http://localhost:5000/api/feedback";
 
 export async function loadEntries(): Promise<FeedbackEntry[]> {
   try {
     const response = await fetch(API_URL);
     if (!response.ok) throw new Error("Failed to fetch");
-
+    
     const data = await response.json();
 
     return data.map((item: any) => ({
@@ -97,14 +96,14 @@ export async function loadEntries(): Promise<FeedbackEntry[]> {
   }
 }
 
-export async function saveEntry(entry: FeedbackEntry, userId: number) {
+export async function saveEntry(entry: FeedbackEntry) {
   try {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...entry,
-        userId 
+        userId: 1 
       }),
     });
 
@@ -112,7 +111,7 @@ export async function saveEntry(entry: FeedbackEntry, userId: number) {
     return await response.json();
   } catch (error) {
     console.error("Save Error:", error);
-    throw error;
+    throw error; 
   }
 }
 export async function deleteEntry(id: string) {
@@ -138,7 +137,7 @@ export function newId() {
   return `FB-${Date.now()
     .toString(36)
     .toUpperCase()}-${Math.random()
-      .toString(36)
-      .slice(2, 6)
-      .toUpperCase()}`;
+    .toString(36)
+    .slice(2, 6)
+    .toUpperCase()}`;
 }
